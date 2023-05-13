@@ -421,6 +421,15 @@ class EscapeDoor extends AdventureScene {
     }
     onEnter() {
 
+        let largeDoor = this.add.text(this.w * 0.1, this.w * 0.1, "🚪🚪 Research Lab")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("The door says 'Research Lab. Proceed with caution.'"))
+            .on('pointerdown', () => {
+                this.showMessage("I wonder what could be in here?");
+                this.gotoScene('researchlab');
+            });
+
         let enemy = this.add.text(this.w * 0.3, this.w * 0.3, "🤺 ATTACKER")
             .setFontSize(this.s * 2)
             .setInteractive()
@@ -438,15 +447,16 @@ class EscapeDoor extends AdventureScene {
             });
 
 
-        let weapon = this.add.text(300, 700, "🔪 weapon")
+        let weapon = this.add.text(this.w * 0.513, this.w * 0.623, "🔪 weapon")
             .setFontSize(this.s * 2)
             .setInteractive()
             .on('pointerover', () => {
                 this.showMessage("I could defend myself with my knife!")
             })
             .on('pointerdown', () => {
-                this.showMessage("You pick up the knife.");
-                this.gainItem('Knife');
+                this.showMessage("ATTACK!");
+                this.loseItem('Knife');
+                this.gotoScene('deathyou');
             })
 
         let run = this.add.text(this.w * 0.1, this.w * 0.15, "🏃 run")
@@ -468,15 +478,24 @@ class DeathDog extends AdventureScene {
         super("deathdog", "Dog Dead!");
     }
     onEnter() {
+        this.loseItem("dog");
+
+        let largeDoor = this.add.text(this.w * 0.1, this.w * 0.1, "🚪🚪 Research Lab")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("The door says 'Research Lab. Proceed with caution.'"))
+            .on('pointerdown', () => {
+                this.showMessage("I wonder what could be in here?");
+                this.gotoScene('researchlab');
+            });
 
         let dog = this.add.text(this.w * 0.3, this.w * 0.3, "🐶🤺 dog dead")
             .setFontSize(this.s * 2)
             .setInteractive()
             .on('pointerover', () => this.showMessage("You ran away like a coward, now your dog is dead..."))
             .on('pointerdown', () => {
-                this.showMessage("What do I do?!");
                 this.tweens.add({
-                    targets: computer,
+                    targets: dog,
                     x: '+=' + this.s,
                     repeat: 2,
                     yoyo: true,
@@ -486,26 +505,19 @@ class DeathDog extends AdventureScene {
             });
 
 
-        let weapon = this.add.text(300, 700, "🔪 weapon")
+        let door = this.add.text(this.w * 0.4, this.w * 0.35, "🚪 door")
             .setFontSize(this.s * 2)
             .setInteractive()
             .on('pointerover', () => {
-                this.showMessage("A knife, this could come in handy later.")
+                this.showMessage("I think I can finally leave, but I need an ID card to open this door.")
             })
             .on('pointerdown', () => {
-                this.showMessage("You pick up the knife.");
-                this.gainItem('Knife');
-            })
-
-        let run = this.add.text(this.w * 0.1, this.w * 0.15, "🏃 run")
-            .setFontSize(this.s * 2)
-            .setInteractive()
-            .on('pointerover', () => {
-                this.showMessage("RuUUUNnnN!")
-            })
-            .on('pointerdown', () => {
-                this.showMessage("*squeak*");
-                this.gotoScene('tunnel');
+                if (this.hasItem("ID card")) {
+                    this.loseItem("ID card");
+                    this.showMessage("*Swipe card*");
+                    door.setText("ESCAPE");
+                    this.gotoScene('outro');
+                }
             })
 
     }
@@ -520,7 +532,7 @@ class DeathYou extends AdventureScene {
         let restart = this.add.text(this.w * 0.3, this.w * 0.3, "💀 You died!")
             .setFontSize(this.s * 2)
             .setInteractive()
-            .on('pointerover', () => this.showMessage("You tried to run away, but couldn't run fast enough..."))
+            .on('pointerover', () => this.showMessage("You tried your best, but it wasn't enough..."))
             .on('pointerdown', () => {
                 this.showMessage("R.I.P.");
                 this.gotoScene('intro');
@@ -535,14 +547,20 @@ class Life extends AdventureScene {
     }
     onEnter() {
 
-        let restart = this.add.text(this.w * 0.3, this.w * 0.3, "💀 You died!")
+        let door = this.add.text(this.w * 0.4, this.w * 0.35, "🚪 door")
             .setFontSize(this.s * 2)
             .setInteractive()
-            .on('pointerover', () => this.showMessage("You tried to run away, but couldn't run fast enough..."))
+            .on('pointerover', () => {
+                this.showMessage("I think I can finally leave, but I need an ID card to open this door.")
+            })
             .on('pointerdown', () => {
-                this.showMessage("R.I.P.");
-                this.gotoScene('intro');
-            });
+                if (this.hasItem("ID card")) {
+                    this.loseItem("ID card");
+                    this.showMessage("*Swipe card*");
+                    door.setText("ESCAPE");
+                    this.gotoScene('outro');
+                }
+            })
 
     }
 }
