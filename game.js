@@ -209,8 +209,341 @@ class Intro extends Phaser.Scene {
         this.add.text(50,100, "Click anywhere to begin.").setFontSize(20);
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
-            this.time.delayedCall(1000, () => this.scene.start('demo1'));
+            this.time.delayedCall(1000, () => this.scene.start('cctvroom'));
         });
+    }
+}
+
+class CCTVRoom extends AdventureScene {
+    constructor() {
+        super("cctvroom", "CCTV Room");
+    }
+
+    onEnter() {
+
+        let computer = this.add.text(this.w * 0.3, this.w * 0.3, "💻 computer")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("An old dusty Dell laptop."))
+            .on('pointerdown', () => {
+                this.showMessage("I don't have time for this!");
+                this.tweens.add({
+                    targets: computer,
+                    x: '+=' + this.s,
+                    repeat: 2,
+                    yoyo: true,
+                    ease: 'Sine.inOut',
+                    duration: 100
+                });
+            });
+
+        let food = this.add.text(this.w * 0.5, this.w * 0.1, "🍗 chicken")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Mm, fried chicken. I hope it's still good to eat...")
+            })
+            .on('pointerdown', () => {
+                this.showMessage("You pick up the drumstick.");
+                this.gainItem('Drumstick');
+            })
+
+        let weapon = this.add.text(300, 700, "🔪 weapon")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("A knife, this could come in handy later.")
+            })
+            .on('pointerdown', () => {
+                this.showMessage("You pick up the knife.");
+                this.gainItem('Knife');
+            })
+
+        let door = this.add.text(this.w * 0.1, this.w * 0.15, "🚪 door")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Am I ready to leave?")
+            })
+            .on('pointerdown', () => {
+                this.showMessage("*squeak*");
+                door.setText("🚪 opened door");
+                this.gotoScene('tunnel');
+            })
+
+    }
+}
+
+class Tunnel extends AdventureScene {
+    constructor() {
+        super("tunnel", "Tunnel");
+    }
+
+    onEnter() {
+
+        let continueTunnel = this.add.text(this.w * 0.3, this.w * 0.3, "🚶 continue walking down tunnel")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("The tunnel is really dark and I can't see much. Should I continue despite not being able to see?"))
+            .on('pointerdown', () => {
+                this.showMessage("Alright, I hope I don't die!");
+                this.gotoScene('tunnelmore');
+            });
+
+        let largeDoor = this.add.text(this.w * 0.1, this.w * 0.1, "🚪🚪 Research Lab")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("The door says 'Research Lab. Proceed with caution.'"))
+            .on('pointerdown', () => {
+                this.showMessage("I wonder what could be in here?");
+                this.gotoScene('researchlab');
+            });
+
+    }
+}
+
+class TunnelMore extends AdventureScene {
+    constructor() {
+        super("tunnelmore", "Tunnel (Continued)");
+    }
+    onEnter() {
+
+        let dog = this.add.text(this.w * 0.5, this.w * 0.1, "🐶 random DOG")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                if (this.hasItem("Drumstick")) {
+                    this.showMessage("Oh, they look hungry. Good thing I picked up the chicken from earlier!");
+                } else {
+                    this.showMessage("What a good boy!");
+                }
+            })
+            .on('pointerdown', () => {
+                if (this.hasItem("Drumstick")) {
+                    this.loseItem("Drumstick");
+                    this.showMessage("*frooof, roof* You gained a friend!");
+                    this.gainItem('dog');
+                    dog.setText("🐶 YOUR DOG NOW");
+                }
+            })
+
+        let backTunnel = this.add.text(this.w * 0.3, this.w * 0.3, "🚶 go back the way you came")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("I want to go back where there is light"))
+            .on('pointerdown', () => {
+                this.showMessage("Time to head back this way.");
+                this.gotoScene('tunnel');
+            });
+    }
+}
+
+class ResearchLab extends AdventureScene {
+    constructor() {
+        super("researchlab", "Research Lab");
+    }
+    onEnter() {
+
+        let computer = this.add.text(this.w * 0.3, this.w * 0.3, "💻 computer")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("An old dusty Dell laptop."))
+            .on('pointerdown', () => {
+                this.showMessage("I don't have time for this!");
+                this.tweens.add({
+                    targets: computer,
+                    x: '+=' + this.s,
+                    repeat: 2,
+                    yoyo: true,
+                    ease: 'Sine.inOut',
+                    duration: 100
+                });
+            });
+
+        let supplyCloset = this.add.text(this.w * 0.1, this.w * 0.1, "🚪 Supplies Closet")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("The door says 'Supplies'"))
+            .on('pointerdown', () => {
+                this.showMessage("Hopefully I can find something useful in here.");
+                this.gotoScene('supplycloset');
+            });
+
+        let buttonDoor = this.add.text(this.w * 0.5, this.w * 0.5, "🔴 button")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("I wonder what this does?")
+            })
+            .on('pointerdown', () => {
+                this.showMessage("*screeeeek*");
+                buttonDoor.setText("🚪 escape door");
+                this.gotoScene('escapedoor');
+            })
+
+    }
+}
+
+class SupplyCloset extends AdventureScene {
+    constructor() {
+        super("supplycloset", "Supply Closet");
+    }
+    onEnter() {
+
+        let idCard = this.add.text(300, 700, "💳 ID card")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("A worker's ID card, could come in handy later.")
+            })
+            .on('pointerdown', () => {
+                this.showMessage("You pick up the ID card.");
+                this.gainItem('ID card');
+            })
+
+        let door = this.add.text(this.w * 0.1, this.w * 0.15, "🚪 door")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("I think I got everything useful here.")
+            })
+            .on('pointerdown', () => {
+                this.showMessage("*squeak*");
+                door.setText("🚪 opened door");
+                this.gotoScene('researchlab');
+            })
+    }
+}
+
+class EscapeDoor extends AdventureScene {
+    constructor() {
+        super("escapedoor", "STRANGER ATTACK");
+    }
+    onEnter() {
+
+        let enemy = this.add.text(this.w * 0.3, this.w * 0.3, "🤺 ATTACKER")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("This random person with a sword is charging at me!"))
+            .on('pointerdown', () => {
+                this.showMessage("What do I do?!");
+                this.tweens.add({
+                    targets: enemy,
+                    x: '+=' + this.s,
+                    repeat: 2,
+                    yoyo: true,
+                    ease: 'Sine.inOut',
+                    duration: 100
+                });
+            });
+
+
+        let weapon = this.add.text(300, 700, "🔪 weapon")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("I could defend myself with my knife!")
+            })
+            .on('pointerdown', () => {
+                this.showMessage("You pick up the knife.");
+                this.gainItem('Knife');
+            })
+
+        let run = this.add.text(this.w * 0.1, this.w * 0.15, "🏃 run")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("RuUUUNnnN!")
+            })
+            .on('pointerdown', () => {
+                this.showMessage("*arqeuphga*");
+                this.gotoScene('deathdog');
+            })
+
+    }
+}
+
+class DeathDog extends AdventureScene {
+    constructor() {
+        super("deathdog", "Dog Dead!");
+    }
+    onEnter() {
+
+        let dog = this.add.text(this.w * 0.3, this.w * 0.3, "🐶🤺 dog dead")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("You ran away like a coward, now your dog is dead..."))
+            .on('pointerdown', () => {
+                this.showMessage("What do I do?!");
+                this.tweens.add({
+                    targets: computer,
+                    x: '+=' + this.s,
+                    repeat: 2,
+                    yoyo: true,
+                    ease: 'Sine.inOut',
+                    duration: 100
+                });
+            });
+
+
+        let weapon = this.add.text(300, 700, "🔪 weapon")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("A knife, this could come in handy later.")
+            })
+            .on('pointerdown', () => {
+                this.showMessage("You pick up the knife.");
+                this.gainItem('Knife');
+            })
+
+        let run = this.add.text(this.w * 0.1, this.w * 0.15, "🏃 run")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("RuUUUNnnN!")
+            })
+            .on('pointerdown', () => {
+                this.showMessage("*squeak*");
+                this.gotoScene('tunnel');
+            })
+
+    }
+}
+
+class DeathYou extends AdventureScene {
+    constructor() {
+        super("deathyou", "Game Over!");
+    }
+    onEnter() {
+
+        let restart = this.add.text(this.w * 0.3, this.w * 0.3, "💀 You died!")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("You tried to run away, but couldn't run fast enough..."))
+            .on('pointerdown', () => {
+                this.showMessage("R.I.P.");
+                this.gotoScene('intro');
+            });
+
+    }
+}
+
+class Life extends AdventureScene {
+    constructor() {
+        super("life", "Escape Door (Continued)");
+    }
+    onEnter() {
+
+        let restart = this.add.text(this.w * 0.3, this.w * 0.3, "💀 You died!")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("You tried to run away, but couldn't run fast enough..."))
+            .on('pointerdown', () => {
+                this.showMessage("R.I.P.");
+                this.gotoScene('intro');
+            });
+
     }
 }
 
@@ -233,7 +566,7 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [LogoScene, Intro, Demo1, Demo2, Outro],
+    scene: [LogoScene, Intro, CCTVRoom, Tunnel, TunnelMore, ResearchLab, SupplyCloset, EscapeDoor, DeathDog, DeathYou, Life, Outro, Demo1, Demo2],
     title: "Adventure Game",
 });
 
